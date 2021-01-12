@@ -143,7 +143,7 @@ class BlockedSource {
    * @param {object} options Additional options
    * @param {object} options.blockSize Size of blocks to be fetched
    */
-  constructor(retrievalFunction, { blockSize = 65536 } = {}) {
+  constructor(retrievalFunction, { blockSize = 65536, getFileSize = async () => null } = {}) {
     this.retrievalFunction = retrievalFunction;
     this.blockSize = blockSize;
 
@@ -161,6 +161,8 @@ class BlockedSource {
 
     // block ids waiting for a batched request. Either a Set or null
     this.blockIdsAwaitingRequest = null;
+
+    this.fileSizePromise = getFileSize();
   }
 
   /**
@@ -170,7 +172,8 @@ class BlockedSource {
    * @returns {ArrayBuffer} The subset of the file.
    */
   async fetch(offset, length, immediate = false, signal) {
-    const top = offset + length;
+    const fileSize = await this.fileSizePromise;
+    const top = fileSize ? Math.min(offset + length, fileSize) : offset + length;
 
     // calculate what blocks intersect the specified range (offset + length)
     // determine what blocks are already stored or beeing requested
@@ -407,7 +410,26 @@ export function makeXHRSource(url, { headers = {}, blockSize } = {}) {
       request.onerror = reject;
       request.send();
     });
-  }, { blockSize });
+  }, {
+    blockSize,
+    getFileSize: async () => {
+      const response = await fetch(url, {
+        headers: {
+          ...headers, Range: `bytes=${0}-${1}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching data.');
+      } else if (response.status === 206) {
+        const contentRange = response.headers.get('content-range');
+        if (!contentRange) {
+          return null;
+        }
+        const [fileSize] = contentRange.split('/').slice(-1);
+        return Number(fileSize);
+      }
+    },
+  });
 }
 
 /**
