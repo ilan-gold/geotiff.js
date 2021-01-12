@@ -373,7 +373,7 @@ export function makeFetchSource(url, { headers = {}, blockSize } = {}) {
     getFileSize: async () => {
       const response = await fetch(url, {
         headers: {
-          ...headers, Range: `bytes=${0}-${1}`,
+          ...headers, Range: 'bytes=0-1',
         },
       });
       if (!response.ok) {
