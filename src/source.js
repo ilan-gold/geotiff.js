@@ -368,7 +368,26 @@ export function makeFetchSource(url, { headers = {}, blockSize } = {}) {
         length: data.byteLength,
       };
     }
-  }, { blockSize });
+  }, {
+    blockSize,
+    getFileSize: async () => {
+      const response = await fetch(url, {
+        headers: {
+          ...headers, Range: `bytes=${0}-${1}`,
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Error fetching data.');
+      } else if (response.status === 206) {
+        const contentRange = response.headers.get('content-range');
+        if (!contentRange) {
+          return null;
+        }
+        const [fileSize] = contentRange.split('/').slice(-1);
+        return Number(fileSize);
+      }
+    },
+  });
 }
 
 /**
@@ -410,26 +429,7 @@ export function makeXHRSource(url, { headers = {}, blockSize } = {}) {
       request.onerror = reject;
       request.send();
     });
-  }, {
-    blockSize,
-    getFileSize: async () => {
-      const response = await fetch(url, {
-        headers: {
-          ...headers, Range: `bytes=${0}-${1}`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error('Error fetching data.');
-      } else if (response.status === 206) {
-        const contentRange = response.headers.get('content-range');
-        if (!contentRange) {
-          return null;
-        }
-        const [fileSize] = contentRange.split('/').slice(-1);
-        return Number(fileSize);
-      }
-    },
-  });
+  }, { blockSize });
 }
 
 /**
