@@ -74,6 +74,12 @@
     "test": "mocha --full-trace --require @babel/register test/geotiff.spec.js"
   },
   "author": "Fabian Schindler",
+  "browser": {
+    "fs": false,
+    "http": false,
+    "https": false,
+    "url": false
+  },
   "contributors": [
     {
       "name": "Fabian Schindler",
