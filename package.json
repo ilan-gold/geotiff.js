@@ -83,6 +83,7 @@
     "https": false,
     "url": false
   },
+  "sideEffects": false,
   "contributors": [
     {
       "name": "Fabian Schindler",
