@@ -9,6 +9,9 @@
     "image",
     "raster"
   ],
+  "alias": {
+    "txml/txml": "txml/dist/txml"
+  },
   "main": "dist-node/geotiff.js",
   "module": "src/geotiff.js",
   "jsdelivr": "dist-browser/geotiff.js",
