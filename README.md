@@ -10,6 +10,7 @@
 
 - Replace JS-based `LZWDecoder` with WASM-based module. https://github.com/geotiffjs/geotiff.js/issues/172#issuecomment-689651449
 - Bump `pako` & `txml` versions and add fields to `package.json` to improve bundler support: https://github.com/geotiffjs/geotiff.js/issues/172#issuecomment-689651449
+- Support [`AbortController`](https://github.com/ilan-gold/geotiff.js/tree/viv#AbortController-Support) objects within requests: https://github.com/geotiffjs/geotiff.js/pull/224
 
 ----
 
@@ -390,6 +391,13 @@ const multiTiff = await fromUrls(
 ### AbortController Support
 
 Geotiff.js supports the use of [`AbortController`s](https://developer.mozilla.org/en-US/docs/Web/API/AbortController). Calls to `getRasters`, `readRGB` and `getTileOrStrip` will throw an `Error` with name `AbortSignal` similar to the browser's `fetch` behavior.
+
+In order to enable this, when you make the tiff source, you need to set the `cacheSize` parameter to `0` due to cache consistency issues - otherwise, once the cache becomes full,
+it will lose its consistency.
+
+```javascript
+const tiff = await fromUrl(source, { cacheSize: 0 });
+```
 
 ```javascript
 const abortController = new AbortController();
