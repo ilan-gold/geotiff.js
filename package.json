@@ -12,13 +12,10 @@
   "alias": {
     "txml/txml": "txml/dist/txml"
   },
-  "main": "dist-node/geotiff.js",
+  "main": "src/geotiff.js",
   "module": "src/geotiff.js",
-  "jsdelivr": "dist-browser/geotiff.js",
   "files": [
-    "src",
-    "dist-node",
-    "dist-browser"
+    "src"
   ],
   "engines": {
     "node": ">=10.19",

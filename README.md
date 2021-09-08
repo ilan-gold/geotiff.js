@@ -11,6 +11,7 @@
 - Replace JS-based `LZWDecoder` with WASM-based module. https://github.com/geotiffjs/geotiff.js/issues/172#issuecomment-689651449
 - Bump `pako` & `txml` versions and add fields to `package.json` to improve bundler support: https://github.com/geotiffjs/geotiff.js/issues/172#issuecomment-689651449
 - Support [`AbortController`](https://github.com/ilan-gold/geotiff.js/tree/viv#AbortController-Support) objects within requests: https://github.com/geotiffjs/geotiff.js/pull/224
+- Remove UMD and CJS bundles. Switch `"main"` entry to module: https://github.com/ilan-gold/geotiff.js/pull/8#issue-712808867
 
 ----
 
