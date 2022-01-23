@@ -248,7 +248,10 @@ export class BlockedSource extends BaseSource {
    */
   readSliceData(slices, blocks) {
     return slices.map((slice) => {
-      const top = Math.min(this.fileSize, slice.offset + slice.length);
+      let top = slice.offset + slice.length;
+      if (this.fileSize !== null) {
+        top = Math.min(this.fileSize, top);
+      }
       const blockIdLow = Math.floor(slice.offset / this.blockSize);
       const blockIdHigh = Math.floor(top / this.blockSize);
       const sliceData = new ArrayBuffer(slice.length);
